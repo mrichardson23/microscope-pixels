@@ -2,7 +2,7 @@
 
 #define PIN 6
 #define PIXELS 17
-#define STEPS_PER_MODE 4
+#define PIXELS_PER_STEP 4
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = pin number (most are valid)
@@ -34,7 +34,7 @@ void loop() {
     if (step < PIXELS) {
       // if we have more steps to go before filling the strip,
       // add one "step" to the current mode.
-      step += PIXELS / STEPS_PER_MODE;
+      step += PIXELS_PER_STEP;
     }
     else {
       // if the strip is full, we go back to step 0

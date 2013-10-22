@@ -144,12 +144,26 @@ uint32_t colorModes[][17] =
     strip.Color(0, 255, 255),
     strip.Color(0, 255, 255),
     strip.Color(0, 255, 255),
+  },
+   {  // color mode 8, half red / half blue:
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(0, 0, 255),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
+    strip.Color(255, 0, 0),
   }
 };
 
-// The lines below determine how many modes are listed above
-// This way
-
-int sizeOfEachMode = sizeof(uint32_t) * 17;
-int modes = sizeof(colorModes) / sizeOfEachMode;
 

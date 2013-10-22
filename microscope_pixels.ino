@@ -2,7 +2,10 @@
 
 #define PIN 6
 #define PIXELS 17
-#define PIXELS_PER_STEP 4
+#define PIXELS_PER_STEP 1
+
+#define NEXT_BUTTON_PIN 7
+#define PREV_BUTTON_PIN 8
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = pin number (most are valid)
@@ -16,47 +19,54 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXELS, PIN, NEO_GRB + NEO_KHZ800);
 // The following #include must be included AFTER the Adafruit_NeoPixel object is
 // instantiated since it uses one of its methods to store RGB values for each
 // pixzel as uint32_t. To edit the color patterns, click the colorPatterns.h
-// tab.
+// tab. This creates the colorModes[][] array. See the file for more info.
 #include "colorPatterns.h"
 
-int mode = 0;
-int step = 0;
+// The lines below determine how many modes are in the colorModes[][] array.
+const int sizeOfEachMode = sizeof(uint32_t) * 17;
+const int modes = sizeof(colorModes) / sizeOfEachMode;
+
+// totalSteps factors in each mode AND the number of pixels turned on.
+// Having this value is helpful for "rolling over" after reaching
+// the last possible mode:
+const int totalSteps = modes * PIXELS;
+
+// currentStep holds the current value within totalSteps. This is
+// incremented or decremented on button pushes.
+int currentStep = 0;
 
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-  Serial.begin(9600);
+  pinMode(NEXT_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(PREV_BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-  while (Serial.available()) {
-    // if we receive a serial byte...
-    if (step < PIXELS) {
-      // if we have more steps to go before filling the strip,
-      // add one "step" to the current mode.
-      step += PIXELS_PER_STEP;
+  if (digitalRead(NEXT_BUTTON_PIN) == LOW) { // if the next button is pushed
+    if (currentStep < totalSteps - 1) {
+      currentStep += PIXELS_PER_STEP; // Increment the step if there's a next step.
     }
     else {
-      // if the strip is full, we go back to step 0
-      step = 0;
-      if (mode < modes-1) {
-        // if we have more modes, we go to the next.
-        mode++;
-      }
-      else {
-        // if we're at the last mode, go to the first.
-        mode = 0;
-      }
+      currentStep = 0; // if we're at the last step, go to the first step (rollover).
     }
-    // set the mode and step:
-    setColorMode(mode, step);
-
-    Serial.print(mode);
-    Serial.print(",");
-    Serial.println(step);
-    
-    Serial.read(); // remove the byte from the buffer
+    // figure out what mode we're in and how many pixels to light
+    // within that mode:
+    setColorMode(currentStep/PIXELS, currentStep%PIXELS);
   }
+
+  if (digitalRead(PREV_BUTTON_PIN) == LOW) { // if the previous button is pushed
+    if (currentStep > 0) {
+      currentStep -= PIXELS_PER_STEP;  // decrement the step if there's a previous step
+    }
+    else {
+      currentStep = totalSteps - 1; // if we're at the first step, go to the last step (rollover)
+    }
+    // figure out what mode we're in and how many pixels to light
+    // within that mode:
+    setColorMode(currentStep/PIXELS, currentStep%PIXELS);
+  }
+  delay(100); // poor-man's debounce
 }
 
 void setColorMode(int mode) {
@@ -72,7 +82,7 @@ void setColorMode(int mode, int pixels) {
   // This function only sets the first specified
   // number of pixels. The remainder will be dark.
   clearPixels();
-  for (int i = 0; i < pixels -1; i++) {
+  for (int i = 0; i <= pixels; i++) {
     strip.setPixelColor(i, colorModes[mode][i]);
   }
   strip.show();
@@ -83,5 +93,6 @@ void clearPixels() {
     strip.setPixelColor(i,0,0,0);
   }
 }
+
 
 

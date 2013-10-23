@@ -8,12 +8,9 @@
 import processing.serial.*;
 import controlP5.*;
 
-color[] pixels=new color[17];
-
 color theColor = color(100, 100, 100);
 
 ControlP5 cp5;
-
 ColorPicker picker;
 Button button;
 Range range;
@@ -30,18 +27,19 @@ void setup()
   picker = cp5.addColorPicker("picker")
     .setPosition(60, 50)
     .setColorValue(theColor)
+    .setBarHeight(50)
     ;
   button = cp5.addButton("sendColor")
     .setValue(0)
     .setPosition(50, 220)
-    .setSize(275, 19)
+    .setSize(275, 35)
     .setCaptionLabel("Send this color")
     ;
   range = cp5.addRange("rangeController")
     .setBroadcast(false) 
     .setPosition(50, 150)
     .setSize(250, 40)
-    .setHandleSize(5)
+    .setHandleSize(10)
     .setRange(1, 17)
     .setRangeValues(1, 17)
     .setNumberOfTickMarks(16)
@@ -61,23 +59,6 @@ void draw() {
   rect(50, 40, 275, 90);
 }
 
-
-void sendTestPattern() {
-  color[] testPattern=new color[17];
-  for (int i = 0; i < testPattern.length; i++) {
-    if (i%3 == 0) {
-      testPattern[i] = color(255, 0, 0);
-    }
-    if (i%3 == 1) {
-      testPattern[i] = color(0, 255, 0);
-    }
-    if (i%3 == 2) {
-      testPattern[i] = color(0, 0, 255);
-    }
-  }
-  writePixels(testPattern);
-}
-
 void writePixels(color[] pixels) {
   for (int i = 0; i < pixels.length; i++) {
     myPort.write(byte(red(pixels[i])));
@@ -87,6 +68,7 @@ void writePixels(color[] pixels) {
 } 
 
 public void sendColor(int theValue) {
+  color[] pixels=new color[17];
   for (int i = 0; i < pixels.length; i++) {
     if ( ((i + 1) >=int(range.getLowValue())) &&  ((i + 1) <= int(range.getHighValue()))) {
       pixels[i] = picker.getColorValue();

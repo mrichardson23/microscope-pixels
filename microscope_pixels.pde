@@ -7,8 +7,9 @@
  *
  */
 
-
 import processing.serial.*;
+
+color[] pixels=new color[18];
 
 Serial myPort;
 
@@ -27,25 +28,25 @@ void mouseReleased() {
   sendTestPattern();
 }
 
-
 void sendTestPattern() {
-  // Alternates RGB Pixels
-  for (int i = 0; i < 51; i++) {
+  color[] testPattern=new color[18];
+  for (int i = 0; i < testPattern.length; i++) {
     if (i%3 == 0) {
-      myPort.write(75);
-      myPort.write(1);
-      myPort.write(1);
+      testPattern[i] = color(255, 0, 0);
     }
     if (i%3 == 1) {
-      myPort.write(1);
-      myPort.write(75);
-      myPort.write(1);
+      testPattern[i] = color(0, 255, 0);
     }
 
     if (i%3 == 2) {
-      myPort.write(1);
-      myPort.write(1);
-      myPort.write(75);
+      testPattern[i] = color(0, 0, 255);
     }
   }
+
+  for (int i = 0; i < testPattern.length; i++) {
+    myPort.write(byte(red(testPattern[i])));
+    myPort.write(byte(green(testPattern[i])));
+    myPort.write(byte(blue(testPattern[i])));
+  }
 }
+

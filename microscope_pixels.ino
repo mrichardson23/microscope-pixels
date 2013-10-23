@@ -40,6 +40,7 @@ void setup() {
   strip.show(); // Initialize all pixels to 'off'
   pinMode(NEXT_BUTTON_PIN, INPUT_PULLUP);
   pinMode(PREV_BUTTON_PIN, INPUT_PULLUP);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -67,6 +68,27 @@ void loop() {
     setColorMode(currentStep/PIXELS, currentStep%PIXELS);
   }
   delay(100); // poor-man's debounce
+
+  // The following is how serial data is used to set the pixels.
+  if (Serial.available() > 51) { // do we have enough bytes to set the pixels?
+    int i = 0; // count of which pixel we're on
+    do {
+      int r = Serial.read(); 
+      int g = Serial.read();
+      int b = Serial.read();
+      // get three bytes, write thosee as RGB to the pixel
+      strip.setPixelColor(i,r,g,b);
+      // increment the pixel
+      i++;
+    } 
+    while (Serial.available());
+    strip.show();
+    delay(100);
+    // not sure why, but the flush below makes it work.
+    // extra bytes aren't being handled, I guess.
+    while (Serial.available())
+      Serial.read(); 
+  }
 }
 
 void setColorMode(int mode) {
@@ -93,6 +115,8 @@ void clearPixels() {
     strip.setPixelColor(i,0,0,0);
   }
 }
+
+
 
 
 

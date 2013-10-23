@@ -9,7 +9,7 @@
 
 import processing.serial.*;
 
-color[] pixels=new color[18];
+color[] pixels=new color[17];
 
 Serial myPort;
 
@@ -29,7 +29,7 @@ void mouseReleased() {
 }
 
 void sendTestPattern() {
-  color[] testPattern=new color[18];
+  color[] testPattern=new color[17];
   for (int i = 0; i < testPattern.length; i++) {
     if (i%3 == 0) {
       testPattern[i] = color(255, 0, 0);
@@ -37,16 +37,18 @@ void sendTestPattern() {
     if (i%3 == 1) {
       testPattern[i] = color(0, 255, 0);
     }
-
     if (i%3 == 2) {
       testPattern[i] = color(0, 0, 255);
     }
   }
-
-  for (int i = 0; i < testPattern.length; i++) {
-    myPort.write(byte(red(testPattern[i])));
-    myPort.write(byte(green(testPattern[i])));
-    myPort.write(byte(blue(testPattern[i])));
-  }
+  writePixels(testPattern);
 }
+
+void writePixels(color[] pixels) {
+  for (int i = 0; i < pixels.length; i++) {
+    myPort.write(byte(red(pixels[i])));
+    myPort.write(byte(green(pixels[i])));
+    myPort.write(byte(blue(pixels[i])));
+  }
+} 
 

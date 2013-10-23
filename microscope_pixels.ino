@@ -70,7 +70,7 @@ void loop() {
   delay(100); // poor-man's debounce
 
   // The following is how serial data is used to set the pixels.
-  if (Serial.available() > 51) { // do we have enough bytes to set the pixels?
+  if (Serial.available() > 50) { // do we have enough bytes to set the pixels?
     int i = 0; // count of which pixel we're on
     do {
       int r = Serial.read(); 

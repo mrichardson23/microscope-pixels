@@ -69,7 +69,7 @@ void writePixels(color[] pixels) {
 
 public void sendColor(int theValue) {
   color[] pixels=new color[17];
-  for (int i = 0; i < pixels.length; i++) {
+  for (int i = 0; i < pixels.length ; i++) {
     if ( ((i + 1) >=int(range.getLowValue())) &&  ((i + 1) <= int(range.getHighValue()))) {
       pixels[i] = picker.getColorValue();
     }
@@ -77,6 +77,7 @@ public void sendColor(int theValue) {
       pixels[i] = color(0, 0, 0);
     }
   }
+  pixels = reverse(pixels);
   writePixels(pixels);
 }
 

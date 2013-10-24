@@ -40,7 +40,7 @@ void setup() {
   strip.show(); // Initialize all pixels to 'off'
   pinMode(NEXT_BUTTON_PIN, INPUT_PULLUP);
   pinMode(PREV_BUTTON_PIN, INPUT_PULLUP);
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
@@ -83,7 +83,7 @@ void loop() {
     } 
     while (Serial.available());
     strip.show();
-    delay(100);
+    //delay(10);
     // not sure why, but the flush below makes it work.
     // extra bytes aren't being handled, I guess.
     while (Serial.available())

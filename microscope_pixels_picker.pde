@@ -8,6 +8,9 @@
 import processing.serial.*;
 import controlP5.*;
 
+static final int interval = 100;
+int prevMillis = 1000;
+
 // Global array of color pixels:
 color[] pixels=new color[17];
 
@@ -19,6 +22,7 @@ Button button;
 Button offButton1;
 Button offButton2;
 Range range;
+Toggle transmit;
 
 Serial myPort;
 
@@ -27,7 +31,7 @@ void setup()
   size(680, 500);
   noStroke();
   String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 9600);
+  myPort = new Serial(this, portName, 115200);
   
   // UI Element Setup:
   cp5 = new ControlP5(this);
@@ -90,7 +94,18 @@ void setup()
     .setBroadcast(true)
     ;
     
+    
+ transmit = cp5.addToggle("transmit")
+     .setPosition(50,350)
+     .setSize(50,20)
+     .setValue(false)
+     .setCaptionLabel("ON TRANSMIT OFF") 
+     .setMode(ControlP5.SWITCH)
+     ;
+     
   setPixels();
+  
+
 }
 
 void draw() {
@@ -105,6 +120,13 @@ void draw() {
       rotate(radians(360.0/17.0));
     }
   popMatrix();
+  
+  if (millis() > prevMillis + interval) {
+    if (transmit.getValue() != 0.0)
+      writePixels(pixels);
+    prevMillis = millis();
+  }
+  
 }
 
 void writePixels(color[] pixels) {

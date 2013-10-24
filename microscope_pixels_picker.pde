@@ -110,11 +110,11 @@ void draw() {
 void writePixels(color[] pixels) {
   // Go through each item in the array,
   // send values for R,G,B as bytes
-  // may need reverse here.
-  for (int i = 0; i < pixels.length; i++) {
-    myPort.write(byte(red(pixels[i])));
-    myPort.write(byte(green(pixels[i])));
-    myPort.write(byte(blue(pixels[i])));
+  color[] reversePixels = reverse(pixels);
+  for (int i = 0; i < reversePixels.length; i++) {
+    myPort.write(byte(red(reversePixels[i])));
+    myPort.write(byte(green(reversePixels[i])));
+    myPort.write(byte(blue(reversePixels[i])));
   }
 } 
 
